@@ -1,0 +1,527 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>KITT</title>
+    <link rel="stylesheet" title="Standard" href="css/estilos.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript" src="contentflow.js"></script>
+ 
+              <script language="JavaScript" type="text/javascript" src="clear.js"></script>
+
+    <script tyle="text/javascript">
+        var cf = new ContentFlow('contentFlow', {reflectionColor: "#000000"});
+    </script>
+      <script type="text/javascript" src="sessvars.js"></script>
+
+    
+<style type="text/css">
+.auto-style1 {
+	text-align: right;
+}
+</style>
+
+    
+</head>
+
+<body>	
+	<div>
+    
+    	<div class="topo">
+        	<div class ="horas-data"  id="horas" style="position: relative;height:30px;margin-left:150px;margin-top:70px;">
+	          	</div>
+                
+				<div class ="horas-data" id="data" style="position: relative;height:30px; margin-left:120px; mardgin-top:90px;">
+				</div>
+                
+        	<script type="text/javascript">
+//<![CDATA[
+
+function faz_ajuda(){
+
+sessvars.ajuda = !sessvars.ajuda;
+
+if(sessvars.ajuda == 0)
+repoeTopo();
+else ajuda();
+
+ window.location.reload();
+}
+
+var output = document.getElementById('output'),
+    pressed = {};
+    
+
+
+window.onkeydown = function(e) {
+ if(e.which == 36) {
+	sessvars.n_home++;
+	sessvars.n_clicks++;
+    if ( pressed[e.which] ) return;
+    pressed[e.which] = e.timeStamp;
+    	}
+    	
+     if(e.which == 81) {
+ if ( pressed[e.which] ) return;
+    pressed[e.which] = e.timeStamp;
+
+    	}
+	    	
+
+};
+    
+
+window.onkeyup = function(e) {
+
+ if(e.which == 81) {
+  alert("cliques: " + sessvars.n_clicks + " | home: " + sessvars.n_home + " | back: " + sessvars.n_back);
+  pressed[e.which] = 0;
+ }
+
+	 if(e.which == 36) {
+
+
+
+    if ( !pressed[e.which] ) return;
+    var duration = ( e.timeStamp - pressed[e.which] ) / 1000;
+    
+    	    
+       if(duration > 1)
+    {
+    sessvars.oneclick = 0;
+     window.location.href = "home_vazio.html";
+    }
+
+
+      	    
+		
+	
+    	      	     
+    	   else  
+{
+    	        	         	    	
+    	    	
+	    clearVars();
+						    clearTelefone();
+						    sessvars.destino=0;
+						    sessvars.tempoCasa = 0;
+						    sessvars.tempoOutraCidade = 0;
+						         window.location.href = "index.html";}
+
+    
+
+       pressed[e.which] = 0;
+    	}
+   
+
+    	
+    		
+};
+
+
+					    function variablesOff(){
+		                sessvars.tempo = 0;
+		                }
+		                
+
+
+						  	function angulos(){
+			                sessvars.angulos = !sessvars.angulos;
+			                window.location.href = "index.html";}
+			                
+			                
+			                
+			                
+			                			                
+
+
+tmonth=new Array("1","2","3","4","5","6","7","8","9","10","11","12");
+
+                        function GetClock(){
+                        date = new Date();
+                        nday   = date.getDate();
+                        nmonth = date.getMonth();
+                        year = date.getFullYear();
+                        nhour  = date.getHours();
+                        nmin   = date.getMinutes();
+                        if(nmin <= 9){nmin="0"+nmin}
+
+document.getElementById('vol1').style.visibility="hidden";
+document.getElementById('temperatura1').style.visibility="hidden";
+
+document.getElementById('ajuda1').style.visibility="hidden";
+ if(sessvars.ajuda){
+ 
+ sessvars.ajuda_msg = "Para fechar a ajuda, volte a pressionar o botão de ajuda";
+ }
+						if(!sessvars.oneTime){
+						sessvars.oneclick=0;
+                        sessvars.volume=50;
+                        sessvars.temperatura=23;
+                        document.getElementById('volume').innerHTML = sessvars.volume.toString();
+                        document.getElementById('temperatura_ac').innerHTML = sessvars.temperatura.toString();
+                        sessvars.n_clicks=0;
+                        sessvars.n_home=0;
+                        sessvars.n_back=0;
+
+                                            sessvars.oneTime=1
+                        } else{ document.getElementById('volume').innerHTML = sessvars.volume.toString();
+                 document.getElementById('temperatura_ac').innerHTML = sessvars.temperatura.toString();
+
+                                              }
+                        
+                                                			
+
+
+                        document.getElementById('horas').innerHTML=" "+nhour+":"+nmin+" ";
+                        document.getElementById('data').innerHTML=" "+nday+"/"+tmonth[nmonth]+"/"+year+" ";
+
+                        setTimeout("GetClock()", 1000);
+                        
+                        if(sessvars.ajuda){
+                        
+                        	document.getElementById('ajuda1').style.visibility="visible";
+                        document.getElementById('ajuda').innerHTML = sessvars.ajuda_msg.toString();
+                        
+                        }
+                        
+                              if(sessvars.musica){
+						
+						
+document.getElementById('nome_musica').innerHTML = sessvars.nome_musica.toString();
+
+
+				          var derp1 = document.getElementById("musica_a_tocar");
+				document.getElementById('vol1').style.visibility="visible";
+								          derp1.src = "Imagens/Radios/speaker.png";}
+
+
+
+     if(sessvars.arCondicionado ){
+												document.getElementById('temperatura1').style.visibility="visible";
+
+				       
+				document.getElementById('temperatura_ac').innerHTML = sessvars.temperatura.toString();
+				     				               
+				     				                 
+				
+				          var derp4 = document.getElementById("ar_condicionado");
+				
+				          derp4.src = "Imagens/ar_condicionado.png";
+				     				               
+				     				               
+				     				               }
+
+
+				          
+				          
+				          if(sessvars.mae){
+
+				          var derp2 = document.getElementById("chamadaImagem");
+				
+				          derp2.src = "Imagens/Contactos/mae.png";}
+				          
+				          if(sessvars.andreF){
+
+				          var derp2 = document.getElementById("chamadaImagem");
+				
+				          derp2.src = "Imagens/Contactos/andreF.png";}
+				          
+				          				          if(sessvars.diogoL){
+
+				          var derp2 = document.getElementById("chamadaImagem");
+				
+				          derp2.src = "Imagens/Contactos/diogoL.png";}
+				          
+				          				          if(sessvars.francisco){
+
+				          var derp2 = document.getElementById("chamadaImagem");
+				
+				          derp2.src = "Imagens/Contactos/francisco.png";}
+				          				          if(sessvars.joanaD){
+
+				          var derp2 = document.getElementById("chamadaImagem");
+				
+				          derp2.src = "Imagens/Contactos/joanaD.png";}
+				          				          if(sessvars.mariaP){
+
+				          var derp2 = document.getElementById("chamadaImagem");
+				
+				          derp2.src = "Imagens/Contactos/mariaP.png";}
+				          
+				          				          if(sessvars.nelson){
+
+				          var derp2 = document.getElementById("chamadaImagem");
+				
+				          derp2.src = "Imagens/Contactos/nelson.png";}
+				          
+				          				          if(sessvars.paulo){
+
+				          var derp2 = document.getElementById("chamadaImagem");
+				
+				          derp2.src = "Imagens/Contactos/paulo.png";}
+
+				          
+				          				          if(sessvars.contacto){
+
+				          var derp2 = document.getElementById("chamadaImagem");
+				
+				          derp2.src = "Imagens/Contactos/contacto.png";}
+
+				          
+					          if(sessvars.tempoCasa){
+							sessvars.tempoOutraCidade = 0;
+				          var derp3 = document.getElementById("tempoImagem");
+				
+				          derp3.src = "Imagens/tempoCasa.png";}
+				          
+				          if(sessvars.tempoOutraCidade){
+							sessvars.tempoCasa = 0;
+				          var derp3 = document.getElementById("tempoImagem");
+				
+				          derp3.src = "Imagens/tempoOutraCidade.png";}
+				          
+if(!sessvars.ajuda){
+ if(sessvars.consumoCombustivel){
+				
+				          var derp4 = document.getElementById("consumo_combustivel");
+				
+				          derp4.src = "Imagens/combustivel.png";}
+				          
+				          				          				          if(sessvars.nivelOleo){
+				
+				          var derp4 = document.getElementById("nivel_oleo");
+				
+				          derp4.src = "Imagens/oleo.png";}
+				          
+				          				          				          if(sessvars.contaKm){
+				
+				          var derp4 = document.getElementById("conta_quilometros");
+				
+				          derp4.src = "Imagens/contador.png";}
+				          
+				          				          				          if(sessvars.temperaturaMotor){
+				
+				          var derp4 = document.getElementById("temperatura_motor");
+				
+				          derp4.src = "Imagens/temperatura.png";}
+				          
+				          				          				          if(sessvars.pressaoPneus){
+				
+				          var derp4 = document.getElementById("pressao_pneus");
+				
+				          derp4.src = "Imagens/pneus.png";}
+
+				}          
+				      				          				          				          if(sessvars.angulos){
+				
+				          var derp4 = document.getElementById("espelho_esq");
+				
+				          derp4.src = "Imagens/lateral_esq.png";
+				          var derp5 = document.getElementById("espelho_dir");
+				
+				          derp5.src = "Imagens/lateral_dir.png";}
+
+
+				          				          if(sessvars.destino){
+				
+				          var derp4 = document.getElementById("gps");
+				
+				          derp4.src = "Imagens/seta_frente.png";}
+						  
+				          
+				          
+                           if(sessvars.falarDestino){
+				
+				          var derp1 = document.getElementById("falar_destino");
+				
+				          derp1.src = "Imagens/a_ouvir.png";
+				        
+				          }
+				          
+				          				  				           				                                                            if(sessvars.falarNumero){
+				
+				          var derp1 = document.getElementById("falar_numero");
+				
+				          derp1.src = "Imagens/a_ouvir.png";
+				          
+				          }
+				          
+                       					    if(sessvars.falarCidade){
+
+				          var derp1 = document.getElementById("falar_cidade");
+				          derp1.src = "Imagens/a_ouvir.png";
+				      
+				         }
+				         
+		
+						  				      if(sessvars.ajuda ){
+				
+				
+				          var derp1 = document.getElementById("ajuda_img");
+				
+				          derp1.src = "Imagens/Outros/help.png";
+				         }
+				          
+				          
+				          if(!sessvars.ajuda ){
+				
+				
+				          var derp1 = document.getElementById("ajuda_img");
+				
+				          derp1.src = "Imagens/Outros/help2.png";
+				          }
+
+
+						  }
+				          
+                        window.onload=GetClock;
+                        
+
+                         sessvars.falarCidade=0;
+sessvars.falarDestino=0;
+sessvars.falarNumero=0;
+
+
+
+
+
+ 
+          //]]>
+          </script>
+        
+        </div>
+        
+        <div class="meio" style="height:300px; width:485px; position: absolute; top: 19px; left: 297px;">
+<div id="contentFlow" class="ContentFlow">
+        <!-- should be place before flow so that contained images will be loaded first -->
+        <div class="loadIndicator"><div class="indicator"></div></div>
+
+        <div class="flow" style="margin-top:50px;">
+
+            <div class="item">
+                <img class="content" href="Paginas/Tempo/Tempo.html" onclick="variablesOff()" src="Imagens/Tempo/Tempo.png"/>
+                <div class="caption">Tempo</div>
+            </div>
+            <div class="item">
+                <img class="content" href="Paginas/Climatizacao/Ac.html" onclick="variablesOff()" src="Imagens/Climatizacao/climatizacao.png"/>
+                <div class="caption">Ar Condicionado</div>
+            </div>
+            <div class="item">
+                <img class="content" href="Paginas/Telefone/Telefone.html" onclick="variablesOff()" src="Imagens/Telefone/phone_green.png"/>
+                <div class="caption">Telefone</div>
+            </div>
+            
+            <div class="item">
+                            <img class="content" href="Paginas/Musica/Musica.html" onclick="variablesOff()" src="Imagens/Musica/music3.png"/>
+                            <div class="caption">Música</div>
+            </div>
+            <div class="item">
+                <img class="content" href="Paginas/Gps/Gps.html" onclick="variablesOff()" src="Imagens/GPS/gps.png"/>
+                <div class="caption">GPS</div>
+            </div>
+            
+            <div class="item">
+                <img class="content" href="javascript:angulos()" onclick="variablesOff()" src="Imagens/Angulos/espelho.png"/>
+                <div class="caption">Ângulos</div>
+            </div>
+            <div class="item">
+                <img class="content" href="Paginas/Outros/Medidores.html" src="Imagens/Outros/medidor.png"/>
+                <div class="caption">Medidores</div>
+            </div>
+            <div class="item">
+                <img id ="ajuda_img" class="content" href="javascript:faz_ajuda()" src="Imagens/Outros/help.png"/>
+                <div class="caption">Ajuda</div>
+            </div>
+        </div>
+        <div class="globalCaption"></div>		
+        
+        </div>
+        
+    </div>
+    
+    
+    </div>
+    
+    <div class="velocidade_rotacao" style="left: 355px; top: 448px" >
+        	<div id="velocidade e rotações" class="velocimetros" style="margin-left:50px; margin-top:0px;">
+          			<strong>100<span style="font-size:medium;">Km/h&nbsp;&nbsp;&nbsp;&nbsp; </span>40<span style="font-size:medium;"> x100 rpm</span></strong></div>
+        </div>
+        
+        		<div id="musica" style="height: 122px; width: 170px; position: absolute; top: 285px; left: 194px;" class="auto-style1">
+			<img id="musica_a_tocar" alt="" src="Imagens/vazio.png" height="42" width="54"
+		          name="imagemMae" style="position: absolute; left: 15px; top: 23px" /></div> 
+		          
+ 	<div id="vol1" class="volume" style="margin-left:50px; margin-top:0px; width: 833px; height: 19px; position: absolute; left: 208px; top: 317px;">
+          			<p style="text-shadow:1px 1px 0 #b6b6b6;"><b id='volume'></b>%</p> </div>
+          			
+   <div id="musica1" class="nome_musica" style="margin-left:50px; margin-top:0px; width: 107px; height: 64px; position: absolute; left: 164px; top: 353px;">
+          			<p style="text-align:center;text-shadow:1px 1px 0 #b6b6b6;line-height: 0.9;"><b id='nome_musica'></b></p> </div>
+
+       
+		                  		
+		          <div id="tempo" style="height: 178px; width: 196px; position: absolute; top: 106px; left: 130px;" class="auto-style1">
+			<img id="tempoImagem" alt="" src="Imagens/vazio.png" height="104" width="105"
+		          name="imagemMae" style="position: absolute; left: 15px; top: 20px" /></div>
+		          
+		          <div id="chamada" style="height: 134px; width: 203px; position: absolute; top: 325px; left: 890px;" class="auto-style1">
+			<img id="chamadaImagem" alt="" src="Imagens/vazio.png" height="137" width="169"
+		          name="imagemMae" style="position: absolute; left: -4px; top: 20px" /></div>
+		          
+		          <div id="combustivel" style="height: 134px; width: 203px; position: absolute; top: 33px; left: 242px;" class="auto-style1">
+			<img id="consumo_combustivel" alt="" src="Imagens/vazio.png" height="56" width="172"
+		          name="imagemMae" style="position: absolute; left: 18px; top: 42px" /></div>
+		          
+		          <div id="temperatura_m" style="height: 134px; width: 203px; position: absolute; top: 33px; left: 420px;" class="auto-style1">
+			<img id="temperatura_motor" alt="" src="Imagens/vazio.png" height="56" width="172"
+		          name="imagemMae" style="position: absolute; left: 18px; top: 42px" /></div>
+		          
+		          <div id="conta_km" style="height: 134px; width: 203px; position: absolute; top: 32px; left: 487px;" class="auto-style1">
+			<img id="conta_quilometros" alt="" src="Imagens/vazio.png" height="56" width="172"
+		          name="imagemMae" style="position: absolute; left: 18px; top: 42px" /></div>
+		          
+		          <div id="nivel_o" style="height: 134px; width: 203px; position: absolute; top: 31px; left: 688px;" class="auto-style1">
+			<img id="nivel_oleo" alt="" src="Imagens/vazio.png" height="56" width="172"
+		          name="imagemMae" style="position: absolute; left: 18px; top: 42px" /></div>
+		          
+		          <div id="pressao_p" style="height: 134px; width: 203px; position: absolute; top: 30px; left: 803px;" class="auto-style1">
+			<img id="pressao_pneus" alt="" src="Imagens/vazio.png" height="56" width="172"
+		          name="imagemMae" style="position: absolute; left: 18px; top: 42px" /></div>
+
+          			 	<div id="temperatura1" class="temperatura" style="margin-left:50px; margin-top:0px; width: 833px; height: 19px; position: absolute; left: 164px; top: 280px;">
+          			<p style="text-shadow:1px 1px 0 #b6b6b6;"><b id='temperatura_ac'></b>º C</p> </div>
+          			
+          			<div id="ajuda1" class="ajuda" style="margin-left:50px; margin-top:0px; width: 560px; height: 50px; position: absolute; left: 215px; top: 91px;">
+          			<p style="text-align:center; text-shadow:1px 1px 0 #b6b6b6;"><b id='ajuda'></b></p> </div>
+
+
+
+
+		          
+		    <div id="arcondicionado" style="height: 134px; width: 203px; position: absolute; top: 145px; left: 176px;" class="auto-style1">
+			<img id="ar_condicionado" alt="" src="Imagens/vazio.png" height="60" width="69"
+		          name="imagemMae" style="position: absolute; left: 18px; top: 76px" /></div>
+		          
+		    <div id="esquerdo" style="height: 134px; width: 203px; position: absolute; top: 374px; left: 223px;" class="auto-style1">
+			<img id="espelho_esq" alt="" src="Imagens/vazio.png" height="70" width="139"
+		          name="imagemMae" style="position: absolute; left: 31px; top: 32px" /></div>
+		          
+		      <div id="direito" style="height: 134px; width: 203px; position: absolute; top: 389px; left: 576px;" class="auto-style1">
+			<img id="espelho_dir" alt="" src="Imagens/vazio.png" height="70" width="139"
+		          name="imagemMae" style="position: absolute; left: 31px; top: 17px" /></div>
+		          
+		        <div id="navegacao" style="height: 134px; width: 203px; position: absolute; top: 342px; left: 408px;" class="auto-style1">
+			<img id="gps" alt="" src="Imagens/vazio.png" height="85" width="160"
+		          name="imagemMae" style="position: absolute; left: 31px; top: 17px" /></div>
+
+
+
+
+		          
+		          
+
+
+</body>
+
+</html>

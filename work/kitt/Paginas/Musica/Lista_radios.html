@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>KITT</title>
+    <link rel="stylesheet" title="Standard" href="../../css/estilos.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript" src="../../contentflow.js"></script>
+        <script language="JavaScript" type="text/javascript" src="../../script.js"></script>
+        <script language="JavaScript" type="text/javascript" src="../../clear.js"></script>
+
+    <script tyle="text/javascript">
+        var cf = new ContentFlow('contentFlow', {reflectionColor: "#000000"});
+    </script>
+          <script type="text/javascript" src="../../sessvars.js"></script>
+
+</head>
+
+<body>	
+	<div>
+    
+    	<div class="topo">
+        	<div class ="horas-data"  id="horas" style="position: relative;height:30px;margin-left:150px;margin-top:70px;">
+	          	</div>
+                
+				<div class ="horas-data" id="data" style="position: relative;height:30px; margin-left:120px; mardgin-top:90px;">
+				</div>
+                
+        	<script type="text/javascript">
+        	               if(sessvars.ajuda)
+        	               	sessvars.ajuda_msg = "Disponibiliza a lista de estações de rádio alcançáveis.";
+
+						function variablesOff(){
+						    sessvars.tempoCasa = 0;
+
+		                }
+
+
+var output = document.getElementById('output'),
+    pressed = {};
+
+window.onkeydown = function(e) {
+ if(e.which == 36) {
+		sessvars.n_home++;
+	sessvars.n_clicks++;
+
+    if ( pressed[e.which] ) return;
+    pressed[e.which] = e.timeStamp;
+    	}
+    	
+    	    	     if(e.which == 81) {
+ if ( pressed[e.which] ) return;
+    pressed[e.which] = e.timeStamp;
+
+    	}
+	    	
+
+
+};
+    
+    	  window.onkeyup = function(e) {
+    	   if(e.which == 81) {
+  alert("cliques: " + sessvars.n_clicks + " | home: " + sessvars.n_home + " | back: " + sessvars.n_back);
+  pressed[e.which] = 0;
+ }
+
+	 if(e.which == 36) {
+
+    if ( !pressed[e.which] ) return;
+    var duration = ( e.timeStamp - pressed[e.which] ) / 1000;
+    
+   	    
+       if(duration > 1)
+    {
+			clearVars();
+		    clearTelefone();
+		    sessvars.destino=0;
+		    sessvars.tempoCasa = 0;
+		    sessvars.tempoOutraCidade = 0;
+		    document.location.reload();
+    }
+       else
+    {         					
+	
+    	    	  window.location.href = "../../index.html";	    
+	    }
+       pressed[e.which] = 0;
+    	}
+};
+
+			                						  	function musica_play(nome){
+						  	
+			                sessvars.nome_musica = nome;
+							document.getElementById('nome_musica').innerHTML = sessvars.nome_musica.toString();
+							sessvars.musica = 1;
+			                window.location.href = "../../index.html";}
+
+
+
+
+                                 //]]>
+          </script>
+        
+        </div>
+        
+      <div class="meio" style="height:300px; width:485px; position: absolute; top: 19px; left: 297px;">
+<div id="contentFlow" class="ContentFlow">
+        <!-- should be place before flow so that contained images will be loaded first -->
+        <div class="loadIndicator"><div class="indicator"></div></div>
+
+        <div class="flow" style="margin-top:50px;">
+			<div class="item">
+                <img class="content" href="javascript:voltar()" src="../../Imagens/Voltar.png"/>
+                <div class="caption">Voltar</div>
+            </div>
+            <div class="item" >
+                <img class="content" href="javascript:musica_play('Rádio Comercial')"   src="../../Imagens/Musica/radio-icon.png"/>
+                <div class="caption">Rádio Comercial</div>
+            </div>
+            <div class="item">
+                <img class="content" href="javascript:musica_play('RFM')" src="../../Imagens/Musica/radio-icon.png"/>
+                <div class="caption">RFM</div>
+            </div>
+            <div class="item">
+                <img class="content" href="javascript:musica_play('Antena 1')" src="../../Imagens/Musica/radio-icon.png"/>
+                <div class="caption">Antena 1</div>
+            </div>
+            <div class="item">
+                <img class="content" href="javascript:musica_play('Antena 2')" src="../../Imagens/Musica/radio-icon.png"/>
+                <div class="caption">Antena 2</div>
+            </div>
+
+            <div class="item">
+                <img class="content" href="javascript:musica_play('Antena 3')" src="../../Imagens/Musica/radio-icon.png"/>
+                <div class="caption">Antena 3</div>
+            </div>
+
+            <div class="item">
+                <img class="content" href="javascript:musica_play('TSF')" src="../../Imagens/Musica/radio-icon.png"/>
+                <div class="caption">TSF</div>
+            </div>
+
+            <div class="item">
+                <img class="content" href="javascript:musica_play('M80')" src="../../Imagens/Musica/radio-icon.png"/>
+                <div class="caption">M80</div>
+            </div>
+            <div class="item">
+                <img class="content" href="javascript:musica_play('Rádio Renascença')" src="../../Imagens/Musica/radio-icon.png"/>
+                <div class="caption">Rádio Renascença</div>
+            </div>
+
+
+            
+        </div>
+        <div class="globalCaption"></div>		
+        
+        </div>
+    </div>
+    </div>
+    
+        <div class="velocidade_rotacao" style="left: 355px; top: 448px" >
+        	<div id="velocidade e rotações" class="velocimetros" style="margin-left:50px; margin-top:0px;">
+          			<strong>100<span style="font-size:medium;">Km/h&nbsp;&nbsp;&nbsp;&nbsp; </span>40<span style="font-size:medium;"> x100 rpm</span></strong></div>
+        </div>
+        
+                               		<div id="musica" style="height: 122px; width: 170px; position: absolute; top: 285px; left: 194px;" class="auto-style1">
+			<img id="musica_a_tocar" alt="" src="../../Imagens/vazio.png" height="42" width="54"
+		          name="imagemMae" style="position: absolute; left: 15px; top: 23px" /></div> 
+		          
+ 	<div id="vol1" class="volume" style="margin-left:50px; margin-top:0px; width: 833px; height: 19px; position: absolute; left: 208px; top: 317px;">
+          			<p style="text-shadow:1px 1px 0 #b6b6b6;"><b id='volume'></b>%</p> </div>
+          			
+   <div id="musica1" class="nome_musica" style="margin-left:50px; margin-top:0px; width: 107px; height: 64px; position: absolute; left: 164px; top: 353px;">
+          			<p style="text-align:center;text-shadow:1px 1px 0 #b6b6b6;line-height: 0.9;"><b id='nome_musica'></b></p> </div>
+
+		          <div id="tempo" style="height: 178px; width: 196px; position: absolute; top: 106px; left: 130px;" class="auto-style1">
+			<img id="tempoImagem" alt="" src="../../Imagens/vazio.png" height="104" width="105"
+		          name="imagemMae" style="position: absolute; left: 15px; top: 20px" /></div>
+		          
+		          <div id="chamada" style="height: 134px; width: 203px; position: absolute; top: 325px; left: 890px;" class="auto-style1">
+			<img id="chamadaImagem" alt="" src="../../Imagens/vazio.png" height="137" width="169"
+		          name="imagemMae" style="position: absolute; left: -4px; top: 20px" /></div>
+		          
+		          <div id="combustivel" style="height: 134px; width: 203px; position: absolute; top: 33px; left: 242px;" class="auto-style1">
+			<img id="consumo_combustivel" alt="" src="../../Imagens/vazio.png" height="56" width="172"
+		          name="imagemMae" style="position: absolute; left: 18px; top: 42px" /></div>
+		          
+		          <div id="temperatura_m" style="height: 134px; width: 203px; position: absolute; top: 33px; left: 420px;" class="auto-style1">
+			<img id="temperatura_motor" alt="" src="../../Imagens/vazio.png" height="56" width="172"
+		          name="imagemMae" style="position: absolute; left: 18px; top: 42px" /></div>
+		          
+		          <div id="conta_km" style="height: 134px; width: 203px; position: absolute; top: 32px; left: 487px;" class="auto-style1">
+			<img id="conta_quilometros" alt="" src="../../Imagens/vazio.png" height="56" width="172"
+		          name="imagemMae" style="position: absolute; left: 18px; top: 42px" /></div>
+		          
+		          <div id="nivel_o" style="height: 134px; width: 203px; position: absolute; top: 31px; left: 688px;" class="auto-style1">
+			<img id="nivel_oleo" alt="" src="../../Imagens/vazio.png" height="56" width="172"
+		          name="imagemMae" style="position: absolute; left: 18px; top: 42px" /></div>
+		          
+		          <div id="pressao_p" style="height: 134px; width: 203px; position: absolute; top: 30px; left: 803px;" class="auto-style1">
+			<img id="pressao_pneus" alt="" src="../../Imagens/vazio.png" height="56" width="172"
+		          name="imagemMae" style="position: absolute; left: 18px; top: 42px" /></div>
+          			 	<div id="temperatura1" class="temperatura" style="margin-left:50px; margin-top:0px; width: 833px; height: 19px; position: absolute; left: 164px; top: 280px;">
+          			<p style="text-shadow:1px 1px 0 #b6b6b6;"><b id='temperatura_ac'></b>º C</p> </div>
+
+
+     			<div id="ajuda1" class="ajuda" style="margin-left:50px; margin-top:0px; width: 560px; height: 50px; position: absolute; left: 215px; top: 91px;">
+          			<p style="text-align:center; text-shadow:1px 1px 0 #b6b6b6;"><b id='ajuda'></b></p> </div>
+
+
+		          
+	<div id="arcondicionado" style="height: 134px; width: 203px; position: absolute; top: 145px; left: 176px;" class="auto-style1">
+			<img id="ar_condicionado" alt="" src="../../Imagens/vazio.png" height="60" width="69"
+		          name="imagemMae" style="position: absolute; left: 18px; top: 76px" /></div>
+		          
+		    <div id="esquerdo" style="height: 134px; width: 203px; position: absolute; top: 374px; left: 223px;" class="auto-style1">
+			<img id="espelho_esq" alt="" src="../../Imagens/vazio.png" height="70" width="139"
+		          name="imagemMae" style="position: absolute; left: 31px; top: 32px" /></div>
+		          
+		      <div id="direito" style="height: 134px; width: 203px; position: absolute; top: 389px; left: 576px;" class="auto-style1">
+			<img id="espelho_dir" alt="" src="../../Imagens/vazio.png" height="70" width="139"
+		          name="imagemMae" style="position: absolute; left: 31px; top: 17px" /></div>
+		          
+		        <div id="navegacao" style="height: 134px; width: 203px; position: absolute; top: 342px; left: 408px;" class="auto-style1">
+			<img id="gps" alt="" src="../../Imagens/vazio.png" height="85" width="160"
+		          name="imagemMae" style="position: absolute; left: 31px; top: 17px" /></div>
+
+
+
+
+
+</body>
+
+</html>

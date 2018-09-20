@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Frogger WebGL - Cardboard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+      body {
+        margin: 0px;
+        overflow: hidden;
+      }
+      #example {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="example"></div>
+
+  <script src="three.min.js"></script>
+  <script src="StereoEffect.js"></script>
+  <script src="DeviceOrientationControls.js"></script>
+  <script src="OrbitControls.js"></script>
+
+  <script>
+    var cameraPerspective, scene, renderer;
+    var effect, controls;
+    var element, container;
+
+    var clock = new THREE.Clock();
+
+      var object_frogger;
+      var totalLifes = 5;
+      var totalPoints = 0;
+      var mapLimit = 1000;
+      var gameOver = false;
+      var numRows = 4;
+      var numTurtleRows = numLogRows = 2;
+      
+      //Geometry vars
+      var mesh;
+      var cars = [];
+      var numCars = 15;
+
+      var numLogs = 4;
+      var numTurtles = 8;
+
+      var skyboxMesh;
+      var turtles = [];
+      var timberLogs = [];
+
+      //Lights vars
+      var directionalOn = true;
+      var pointLightOn = true;
+      var spotLightOn = true;
+      
+      //Special effects vars
+      var fogOn = false;
+      ///// Particles
+      var particlesColors = [0xFF0FFF, 0xCCFF00, 0xFF000F, 0x996600, 0xFFFFFF];
+      var movementSpeed = 50;
+      var totalObjects = 1000;
+      var objectSize = 10;
+      var sizeRandomness = 1000;
+
+
+      var dirs = [];
+      var parts = [];
+      
+      function BB() {
+        this.vecMin = [0,0,0];
+        this.vecMax = [0,0,0];
+      }
+
+      function takeLifes() {
+        resetFrog();
+        totalLifes = totalLifes - 1;
+      }
+    
+      function addPoints() {
+        totalPoints += 10;
+      }
+  
+      function restartGame() {
+        totalPoints =0;
+        totalLifes = 5;
+        gameOver = false;
+      }
+
+      function endGame() {
+        gameOver = true;
+      }
+
+      BB.prototype.collide = function(b) {
+        //Check if Box1's max is greater than Box2's min and Box1's min is less than Box2's max (if they collide)
+        return(this.vecMax[0] > b.vecMin[0] && 
+          this.vecMin[0] < b.vecMax[0] &&
+          this.vecMax[1] > b.vecMin[1] &&
+          this.vecMin[1] < b.vecMax[1] &&
+          this.vecMax[2] > b.vecMin[2] &&
+          this.vecMin[2] < b.vecMax[2]);
+        //If not, it will return false
+      };
+
+    init();
+    animate();
+
+    function init() {
+      renderer = new THREE.WebGLRenderer();
+      element = renderer.domElement;
+      container = document.getElementById('example');
+      container.appendChild(element);
+
+      effect = new THREE.StereoEffect(renderer);
+
+      scene = new THREE.Scene();
+
+        //CAMERAS-----------------------------------------------------------------------------------------------------------------------------------
+      cameraPerspective = new THREE.PerspectiveCamera(90, 1, 0.001, 700);
+      cameraPerspective.position.set(0, -775, -220);
+      cameraPerspective.up.set(0,0,-1);
+      //cameraPerspective.position.set(object_frogger.position.x, object_frogger.position.y, object_frogger.position.z);
+      scene.add(cameraPerspective);
+
+        //OBJECTS / MATERIALS---------------------------------------------------------------------------------------------------------------------
+        var boxGeo= new THREE.BoxGeometry( 200, 200, 200 );
+        
+        var texture = THREE.ImageUtils.loadTexture( 'textures/crate.png' );
+        texture.anisotropy = renderer.getMaxAnisotropy();
+        
+        
+        object_box = new THREE.Mesh( boxGeo, new THREE.MeshBasicMaterial( { map: texture } ) );
+        
+        
+        //River
+        var river = new THREE.BoxGeometry(1050, 600, 5);
+        var material = new THREE.MeshPhongMaterial( { ambient: 0x0000ff, specular: 0x0000b2, shininess: 30, shading: THREE.SmoothShading, map: THREE.ImageUtils.loadTexture('textures/water2.jpg'), blending : THREE.AdditiveBlending, transparent: true} );
+        var object_River = new THREE.Mesh( river, material);
+        object_River.rotation.z = Math.PI;
+        object_River.position.z = -300;
+        object_River.position.y = 450;
+        scene.add(object_River);
+        
+        //Grass
+        var grass_End = new THREE.BoxGeometry(1050, 200, 5);
+        var object_grass_End = new THREE.Mesh( grass_End, new THREE.MeshPhongMaterial( { ambient: 0x006600, specular: 0x005900, shininess: 30, shading: THREE.SmoothShading, map: THREE.ImageUtils.loadTexture('textures/grass.jpg')  } ) );
+        
+        object_grass_End.rotation.z = Math.PI;
+        object_grass_End.position.z = -300;
+        object_grass_End.position.y = 850;
+        scene.add(object_grass_End);
+
+        //SafeSpot
+        var SafeSpot = new THREE.BoxGeometry(1050, 200, 5);
+        var object_safespot = new THREE.Mesh( SafeSpot, new THREE.MeshPhongMaterial( { ambient: 0x845321, specular: 0x73481d, shininess: 30, shading: THREE.SmoothShading, map: THREE.ImageUtils.loadTexture('textures/sidewalk.jpg')  } ) );
+        object_safespot.rotation.z = Math.PI;
+        object_safespot.position.z = -300;
+        object_safespot.position.y = 50;
+        scene.add(object_safespot);
+        
+        //Road 
+        var road = new THREE.BoxGeometry(1050, 600, 5);
+        var object_Road = new THREE.Mesh( road, new THREE.MeshPhongMaterial( { ambient: 0x666666, specular: 0x595959, shininess: 30, shading: THREE.SmoothShading, map: THREE.ImageUtils.loadTexture('textures/road.jpg') } ) );
+        object_Road.rotation.z = Math.PI;
+        object_Road.position.z = -300;
+        object_Road.position.y = -350;
+        scene.add(object_Road);
+        
+        //Start
+        var start = new THREE.BoxGeometry(1050, 200, 5);
+        object_Start = new THREE.Mesh( start, new THREE.MeshPhongMaterial( { ambient: 0x006600, specular: 0x005900, shininess: 30, shading: THREE.SmoothShading, map: THREE.ImageUtils.loadTexture('textures/grass.jpg')  } ) );
+        object_Start.rotation.z = Math.PI;
+        object_Start.position.z = -300;
+        object_Start.position.y = -750;
+        scene.add(object_Start);
+        
+        
+        //Frogger
+        
+        var frogger = new THREE.BoxGeometry(50, 100, 50);
+        object_frogger = new THREE.Mesh( frogger, new THREE.MeshPhongMaterial( { ambient: 0xcc0000, color: 0xb20000, specular: 0x990000, shininess: 30, shading: THREE.SmoothShading } ) );
+        object_frogger.rotation.z = Math.PI;
+        object_frogger.position.z = -275;
+        object_frogger.position.y = -800;
+        object_frogger.bb = new BB();
+
+        scene.add(object_frogger);
+        //cameraPerspective.position.set(object_frogger.position.x, object_frogger.position.y, object_frogger.position.z);
+        
+        //HELPER
+    
+        object_helper = new THREE.Mesh( frogger, new THREE.MeshLambertMaterial({color: 0xff0000, transparent: true, opacity: 0.0}) );
+        object_helper.rotation.z = Math.PI;
+        object_helper.position.z = -300;
+        object_helper.position.y = 0;
+        
+        scene.add(object_helper);
+        
+        //Billboards
+        
+        var tree = new THREE.BoxGeometry(400, 400, 5);
+        var materialTree =new THREE.MeshPhongMaterial( { transparent: true, ambient: 0xFFFFFF, color: 0xFFFFFF, specular: 0xFFFFFF, shininess: 100, shading: THREE.SmoothShading, map: THREE.ImageUtils.loadTexture('textures/tree.png')} );
+        object_Tree1 = new THREE.Mesh( tree, materialTree);
+
+        object_Tree1.position.z = -100;
+        object_Tree1.position.y = 150;
+        object_Tree1.position.x = 325;
+        object_Tree1.rotation.x = Math.PI/2;
+    
+        scene.add(object_Tree1);
+       
+        object_Tree2 = new THREE.Mesh( tree, materialTree);
+       
+        object_Tree2.position.z = -100;
+        object_Tree2.position.y = 150;
+        object_Tree2.position.x = -325;
+        object_Tree2.rotation.x = Math.PI/2;
+       
+        scene.add(object_Tree2);
+
+        // INIT LIGHTS ///////////////////////////////////////////////////////
+        // AMBIENT LIGHT
+        scene.add( new THREE.AmbientLight( 0x555555 ) );
+       
+        // DIRECIONAL LIGHT
+        var sun = new THREE.SphereGeometry( 100, 100, 100 );
+        directionalLight = new THREE.DirectionalLight(0xaaaaaa, 0.2);
+        directionalLight.position.set(0,0, 10000000);
+        scene.add(directionalLight);
+        
+        // POINT LIGHTS
+        var intensity = 1.0;
+        var distance = 150;
+        var c1 = 0xffffff, c2 = 0x0040ff, c3 = 0x80ff80, c4 = 0xffaa00, c5 = 0x00ffaa, c6 = 0xff1100;
+        var sphere = new THREE.SphereGeometry( 10, 10, 10 );
+
+        light1 = new THREE.PointLight( c1, intensity, distance );
+        light1.position.z = -200;
+        light1.position.y = 50;
+        light1.position.x = -400;
+        scene.add( light1 );
+       
+        light2 = new THREE.PointLight( c1, intensity, distance );
+        light2.position.z = -200;
+        light2.position.y = 50;
+        light2.position.x = 400;
+        scene.add( light2 );
+       
+        light3 = new THREE.PointLight( c1, intensity, distance );
+        light3.position.z = -200;
+        light3.position.y = -750;
+        light3.position.x = 400;
+        scene.add( light3 );
+       
+        light4 = new THREE.PointLight( c1, intensity, distance );
+        light4.position.z = -200;
+        light4.position.y = -750;
+        light4.position.x = -400;
+        scene.add( light4 );
+       
+        light5 = new THREE.PointLight( c1, intensity, distance );
+        light5.position.z = -200;
+        light5.position.y = 850;
+        light5.position.x = 400;
+        scene.add( light5 );
+       
+        light6 = new THREE.PointLight( c1, intensity, distance );
+        light6.position.z = -200;
+        light6.position.y = 850;
+        light6.position.x = -400;
+        scene.add( light6 );
+       
+        //SPOT LIGHT
+        spotLight = new THREE.SpotLight( 0xdddddd );
+        spotLight.intensity = 1;
+        spotLight.distance = 2000;
+        spotLight.angle = Math.PI/20;
+        spotLight.exponent = 0;
+        scene.add(spotLight);
+
+
+        // SCENE
+
+        scene.fog = new THREE.FogExp2( 0x999999, 0 );
+
+                //LENS FLARE
+        var textureFlare0 = THREE.ImageUtils.loadTexture( "textures/lensflare0.png" );
+        var textureFlare2 = THREE.ImageUtils.loadTexture( "textures/lensflare2.png" );
+        var textureFlare3 = THREE.ImageUtils.loadTexture( "textures/lensflare3.png" );
+        
+        addLight( 0.55, 0.9, 0.5, 0, 500, -100 );
+
+
+        function addLight( h, s, l, x, y, z ) {
+          var light = new THREE.PointLight( 0xffffff, 1.5, 4500 );
+          light.color.setHSL( h, s, l );
+          light.position.set( x, y, z );
+          scene.add( light );
+          var flareColor = new THREE.Color( 0xffffff );
+          flareColor.setHSL( h, s, l + 0.5 );
+          var lensFlare = new THREE.LensFlare( textureFlare0, 700, 0.0, THREE.AdditiveBlending, flareColor );
+          lensFlare.add( textureFlare2, 512, 0.0, THREE.AdditiveBlending );
+          lensFlare.add( textureFlare2, 512, 0.0, THREE.AdditiveBlending );
+          lensFlare.add( textureFlare2, 512, 0.0, THREE.AdditiveBlending );
+          lensFlare.add( textureFlare3, 60, 0.6, THREE.AdditiveBlending );
+          lensFlare.add( textureFlare3, 70, 0.7, THREE.AdditiveBlending );
+          lensFlare.add( textureFlare3, 120, 0.9, THREE.AdditiveBlending );
+          lensFlare.add( textureFlare3, 70, 1.0, THREE.AdditiveBlending );
+          lensFlare.customUpdateCallback = lensFlareUpdateCallback;
+          lensFlare.position.copy( light.position );
+          scene.add( lensFlare );
+        }
+ 
+
+        initCars();
+        initTurtles();
+        initLogs();
+
+
+      controls = new THREE.OrbitControls(cameraPerspective, element);
+      controls.rotateUp(Math.PI / 4);
+      controls.target.set(
+        cameraPerspective.position.x,cameraPerspective.position.y,cameraPerspective.position.z
+      );
+      controls.noZoom = true;
+      controls.noPan = true;
+
+      function setOrientationControls(e) {
+        if (!e.alpha) {
+          return;
+        }
+
+        controls = new THREE.DeviceOrientationControls(cameraPerspective, true);
+        controls.connect();
+        controls.update();
+
+        element.addEventListener('click', fullscreen, false);
+
+        window.removeEventListener('deviceorientation', setOrientationControls);
+      }
+      window.addEventListener('deviceorientation', setOrientationControls, true);
+
+
+      
+
+      window.addEventListener('resize', resize, false);
+      //window.addEventListener('keydown', checkKeyPressed, false);
+      setTimeout(resize, 1);
+    }   // END INIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+      function lensFlareUpdateCallback( object ) {
+        var f, fl = object.lensFlares.length;
+        var flare;
+        var vecX = -object.positionScreen.x * 2;
+        var vecY = -object.positionScreen.y * 2;
+
+        for( f = 0; f < fl; f++ ) {
+          flare = object.lensFlares[ f ];
+          flare.x = object.positionScreen.x + vecX * flare.distance;
+          flare.y = object.positionScreen.y + vecY * flare.distance;
+          flare.rotation = 0;
+        }
+
+        object.lensFlares[ 2 ].y += 0.025;
+        object.lensFlares[ 3 ].rotation = object.positionScreen.x * 0.5 + THREE.Math.degToRad( 45 );
+      }
+      
+    /*function checkCollisions(){
+        for (var i=0; i < numCars; i++) {
+          if(object_frogger.bb.collide(cars[i].bb)){takeLifes()}
+        }
+        
+       //if on the river
+        var tur = "", tim = "";
+        if(object_frogger.position.y > 150 && object_frogger.position.y < 800){
+          
+          for (var i=0; i < numTurtles; i++) {
+            if(object_frogger.bb.collide(turtles[i].bb)){tur = turtles[i]; console.log("hit turtle"); break;} else {tur = "";}
+          }
+          
+          for (var i=0; i < numLogs; i++) {
+            if(object_frogger.bb.collide(timberLogs[i].bb)){tim = timberLogs[i];console.log("hit log"); break;} else {tim = "";}
+          }
+        
+
+          if(tim != "" || tur != "" ) {
+            if(tur != "") {
+              console.log("moving turtle")
+              object_frogger.position.x -= 1;
+            } else {
+              console.log("moving log")
+              object_frogger.position.x += 1;
+            }
+
+          } 
+          else
+            console.log("morri"); takeLifes();
+        }
+        
+        if(object_frogger.position.y >= 800){
+          resetFrog();
+          addPoints();
+        }
+      
+      }     */  
+
+        
+      function ExplodeAnimation(x,y) {
+        var geometry = new THREE.Geometry();
+          
+        for (i = 0; i < totalObjects; i ++) {
+          var vertex = new THREE.Vector3();
+          vertex.x = x;
+          vertex.y = y;
+          vertex.z = -280;
+          
+          geometry.vertices.push( vertex );
+          dirs.push({x:(Math.random() * movementSpeed)-(movementSpeed/2),y:(Math.random() * movementSpeed)-(movementSpeed/2),z:(Math.random() * movementSpeed)-(movementSpeed/2)});
+        }
+    
+        var material = new THREE.PointCloudMaterial( { size: 100,  color: particlesColors[Math.round(Math.random() * particlesColors.length)] ,map: THREE.ImageUtils.loadTexture("textures/particle.png"),blending: THREE.AdditiveBlending,transparent: true });
+        var particles = new THREE.PointCloud( geometry, material );
+          
+        this.object = particles;
+        this.status = true;
+        
+        this.xDir = (Math.random() * movementSpeed)-(movementSpeed/2);
+        this.yDir = (Math.random() * movementSpeed)-(movementSpeed/2);
+        this.zDir = (Math.random() * movementSpeed)-(movementSpeed/2);
+        
+        scene.add(this.object);
+        
+        this.update = function() {
+          if (this.status == true) {
+            var pCount = totalObjects;
+            while(pCount--) {
+              var particle =  this.object.geometry.vertices[pCount]
+              particle.y += dirs[pCount].y;
+              particle.x += dirs[pCount].x;
+              particle.z += dirs[pCount].z;
+            }
+
+            this.object.geometry.verticesNeedUpdate = true;
+          }
+        }          
+      }
+
+    function resize() {
+      var width = container.offsetWidth;
+      var height = container.offsetHeight;
+
+      cameraPerspective.aspect = width / height;
+      cameraPerspective.updateProjectionMatrix();
+
+      renderer.setSize(width, height);
+      effect.setSize(width, height);
+    }
+
+    function update(dt) {
+      resize();
+
+      cameraPerspective.updateProjectionMatrix();
+
+      controls.update(dt);
+    }
+
+    function render(dt) {
+      cameraPerspective.position.set(object_frogger.position.x, object_frogger.position.y-5, object_frogger.position.z+60);
+      effect.render(scene, cameraPerspective);
+      controls.target.set(
+        object_frogger.position.x ,
+        object_frogger.position.y+100,
+        object_frogger.position.z+50
+      );
+    }
+
+    function animate(t) {
+      requestAnimationFrame(animate);
+      
+        spotLight.position.set( object_frogger.position.x, object_frogger.position.y, -285 );
+        spotLight.target = object_helper;
+            
+        //billboarding
+        object_Tree1.rotation.setFromRotationMatrix( cameraPerspective.matrix );
+        object_Tree2.rotation.setFromRotationMatrix( cameraPerspective.matrix );
+
+        //dynamic objects update
+        updateCars();
+        updateTurtles();
+        updateLogs();
+      
+        var pCount = parts.length;
+        while(pCount--) {
+          parts[pCount].update();
+        }
+            
+        object_box.rotation.y += 0.005;
+        object_box.position.z += 0.005;
+
+        if(totalLifes < 1) endGame();
+        updateFrog();
+
+        //checkCollisions();
+
+      update(clock.getDelta());
+      render(clock.getDelta());
+    }
+
+         function initCars() {
+        var car = new THREE.BoxGeometry(50, 100, 50);
+  
+        for (i = 0; i < numCars; i++) {
+          var object_car = new THREE.Mesh(car, new THREE.MeshPhongMaterial({
+            ambient: 0x0DDDDD, 
+            color: 0xdddddd, 
+            specular: 0x009900, 
+            shininess: 30, 
+            shading: THREE.SmoothShading
+          }));
+          object_car.rotation.z = Math.PI;
+          object_car.position.z = -275;
+          object_car.moving = 0;
+          object_car.bb = new BB();
+
+          var r = 150 * (numCars/numRows) * Math.random();
+
+          //Lane1
+          if(i % numRows == 0) {
+            object_car.position.y = -575;
+            object_car.position.x = -535 - r;
+          }
+          //Lane2
+          else if(i % numRows == 1) {
+            object_car.position.y = -425;
+            object_car.position.x = 535 + r;
+          }
+          //Lane3
+          else if(i % numRows == 2) {
+            object_car.position.y = -275;
+            object_car.position.x = 535 + r;
+          }
+          //Lane4
+          else {
+            object_car.position.y = -125;
+            object_car.position.x = -535 - r;
+          }
+           
+          cars.push(object_car);
+          scene.add(object_car);
+        }
+      }
+
+      function updateCars(){
+        for(i = 0; i < cars.length; i++){
+          var car = cars[i];
+          var lane = car.position.y.toString()[1];
+
+          var r = 50 * (numCars/numRows) * Math.random();
+
+          if(lane % 2 == 0) {
+            car.position.x -= 5;
+
+            if(car.position.x < -510 - 55 - (r * Math.random())) {
+              scene.remove(car);
+              car.position.x = 510 + r;
+              scene.add(car);
+            }
+          }
+          else {
+            car.position.x += 5;
+
+            if(car.position.x > 510 + 55 + (r * Math.random())) {
+              scene.remove(car);
+              car.position.x = -510 - r;
+              scene.add(car);
+            }
+          }
+
+          car.bb.vecMin = [car.position.x-30, car.position.y-30, car.position.z-30];
+          car.bb.vecMax = [car.position.x+30, car.position.y+30, car.position.z+30];
+        }
+      }
+      
+      function initTurtles() {
+        var turtle = new THREE.BoxGeometry(50, 100, 50);
+
+        for(i = 0; i < numTurtles; i++) {
+          var object_turtle = new THREE.Mesh(turtle, new THREE.MeshPhongMaterial({
+            ambient: 0x004411,
+            color: 0x00DD22,
+            specular: 0x00FFAA,
+            shininess: 20,
+            shading: THREE.SmoothShading
+          }));
+          object_turtle.rotation.z = Math.PI;
+          object_turtle.position.z = -318;
+          object_turtle.moving = 0;
+          object_turtle.bb = new BB();
+
+          var r = 150 * (numTurtles/numTurtleRows) * Math.random();
+
+          //Lane1
+          if(i % 2 == 0) {
+            object_turtle.position.y = 225; //150 + 150/2.0
+            object_turtle.position.x = -510 - r;
+          }
+          //Lane2
+          else if(i % 2 == 1) {
+            object_turtle.position.y = 525; //previous + (150 * 2)
+            object_turtle.position.x = 510 + r;
+          }
+           
+          turtles.push(object_turtle);
+          scene.add(object_turtle);
+        }
+      }
+
+      function updateTurtles() {
+        for(i = 0; i < turtles.length; i++){
+          var turtle = turtles[i];
+          var row = turtle.position.y.toString()[1];
+
+          var r = 50 * (numTurtles/numTurtleRows) * Math.random();
+
+          if(row % 2 == 0) {
+            turtle.position.x -= 1;
+
+            if(turtle.position.x < -510 - 55 - (r * Math.random())) {
+              scene.remove(turtle);
+              turtle.position.x = 510 + r;
+              scene.add(turtle);
+            }
+          }
+          else {
+            turtle.position.x += 1;
+
+            if(turtle.position.x > 510 + 55 + (r * Math.random())) {
+              scene.remove(turtle);
+              turtle.position.x = -510 - r;
+              scene.add(turtle);
+            }
+          }
+
+          turtle.bb.vecMin = [turtle.position.x-30, turtle.position.y-30, turtle.position.z-30];
+          turtle.bb.vecMax = [turtle.position.x+30, turtle.position.y+30, turtle.position.z+30];
+
+        }
+      }
+
+      function initLogs() {
+        var log = new THREE.BoxGeometry(160, 100, 50);
+
+        for(i = 0; i < numLogs; i++) {
+          var object_log = new THREE.Mesh(log, new THREE.MeshPhongMaterial({
+            ambient: 0x5E2605,
+            color: 0x5E2605,
+            specular: 0x5E2605,
+            shininess: 20,
+            shading: THREE.SmoothShading
+          }));
+          object_log.rotation.z = Math.PI;
+          object_log.position.z = -318;
+          object_log.moving = 0;
+          object_log.bb = new BB();
+
+          var r = 450 * (numLogs/numLogRows) * Math.random();
+
+          //Lane1
+          if(i % 2 == 0) {
+            object_log.position.y = 375; //150 + 150/2.0
+            object_log.position.x = -510 - r;
+          }
+          //Lane2
+          else if(i % 2 == 1) {
+            object_log.position.y = 675; //previous + (150 * 2)
+            object_log.position.x = 510 + r;
+          }
+           
+          timberLogs.push(object_log);
+          scene.add(object_log);
+        }
+      }
+
+      function updateLogs() {
+        for(i = 0; i < timberLogs.length; i++){
+          var log = timberLogs[i];
+          var row = log.position.y.toString()[1];
+
+          var r = 50 * (numLogs/numLogRows) * Math.random();
+
+          if(row % 2 == 0) {
+            log.position.x -= 1;
+
+            if(log.position.x < -510 - 165 - (r * Math.random())) {
+              scene.remove(log);
+              log.position.x = 510 + r;
+              scene.add(log);
+            }
+          }
+          else {
+            log.position.x += 1;
+
+            if(log.position.x > 510 + 165 + (r * Math.random())) {
+              scene.remove(log);
+              log.position.x = -510 - r;
+              scene.add(log);
+            }
+          }
+
+          log.bb.vecMin = [log.position.x-50, log.position.y-50, log.position.z-30];
+          log.bb.vecMax = [log.position.x+50, log.position.y+50, log.position.z+30];
+
+        }
+      }
+
+      function updateFrog(){
+
+
+        if (object_frogger.position.y<=600){
+
+          object_frogger.position.y+=1;
+
+          object_frogger.position.x+=0.1;
+
+        }
+
+        else {
+
+          resetFrog();
+
+        }
+
+        //cameraPerspective.position.set(object_frogger.position.x, object_frogger.position.y, object_frogger.position.z);
+  
+      }   
+
+   
+      function resetFrog(){
+        object_frogger.position.x = 0;
+        object_frogger.position.y = -800;
+        object_frogger.position.z = -275;
+      }
+
+    function fullscreen() {
+      if (container.requestFullscreen) {
+        container.requestFullscreen();
+      } else if (container.msRequestFullscreen) {
+        container.msRequestFullscreen();
+      } else if (container.mozRequestFullScreen) {
+        container.mozRequestFullScreen();
+      } else if (container.webkitRequestFullscreen) {
+        container.webkitRequestFullscreen();
+      }
+    }
+  </script>
+
+  </body>
+</html>

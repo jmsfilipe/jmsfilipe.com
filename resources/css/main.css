@@ -46,13 +46,14 @@ html {
 }
 
 body {
-  background-color: #677077;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Open Sans";
   font-size: 100%;
   margin: 0;
+  background-color: #c2bf9c;
 }
 
 #canvas {
+  background-color: #fff;
   height: 90vh;
   left: 0;
   position: absolute;
@@ -72,6 +73,7 @@ header {
   background-color: #252839;
   background-position: top center;
   background-repeat: no-repeat;
+  font-size: 16px;
   height: 90vh;
   padding-bottom: 20px;
   text-align: center;
@@ -81,9 +83,9 @@ header {
 }
 
 .head-text {
-  color: #f2b632;
+  color: #7ea373;
   display: inline-block;
-  font-size: 2em;
+  font-size: 2rem;
   left: 0;
   margin: 0 auto;
   max-width: 900px;
@@ -97,7 +99,7 @@ header {
 }
 
 .tagline {
-  font-size: 2em;
+  font-size: 4rem;
   font-weight: 600;
   margin: 20px 0 0;
   transition: all 0.7s ease-in-out;
@@ -109,7 +111,7 @@ header {
 
 .sub-tagline {
   filter: alpha(opacity=0);
-  font-size: 1em;
+  font-size: 2.5rem;
   margin: 0;
   opacity: 0;
   transition: all 0.7s ease-in-out;
@@ -134,34 +136,42 @@ header {
 
 .badge {
   border-radius: 100%;
-  border: #3a4450 4px solid;
+  border: #507084 4px solid;
   box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 4px;
   display: block;
-  height: 100px;
+  height: 250px;
   margin: -40px auto 20px;
   opacity: 0;
   overflow: hidden;
   padding: 0;
   position: relative;
-  width: 100px;
+  width: 250px;
   z-index: 9999;
+}
+
+/* force hidden badges */
+.cssanimations .cd-timeline-img.is-hidden {
+	visibility: visible !important;
 }
 
 .about-me {
   height: auto;
-  margin: 50px 20% 50px 20%;
+  margin: 50px 25% 50px 25%;
+}
+
+.about-me p {
+  color: #262624;
 }
 
 .portfolio,
 .bonus {
-  background-color: #252839;
+  background-color: #507084;
   width: 100%;
 }
 
 .about-me h1 {
-  color: #252839;
-  font-family: 'Ubuntu', sans-serif;
-  font-size: 4em;
+  color: #fff;
+  font-size: 3rem;
   font-weight: 800;
   line-height: 1.25;
   margin: 0 0 24px;
@@ -171,9 +181,8 @@ header {
 
 .portfolio h1,
 .bonus h1 {
-  color: #677077;
-  font-family: 'Ubuntu', sans-serif;
-  font-size: 4em;
+  color: #fff;
+  font-size: 3rem;
   font-weight: 800;
   line-height: 1.25;
   margin: 0 0 24px;
@@ -183,7 +192,6 @@ header {
 
 p {
   color: #252839;
-  font-family: 'Ubuntu', sans-serif;
   font-size: 18px;
   font-weight: 500;
   line-height: 32px;
@@ -194,7 +202,7 @@ p {
 nav a {
   color: #fff;
   display: inline-block;
-  font-size: 1.35em;
+  font-size: 1.35rem;
   font-weight: 400;
   letter-spacing: 1px;
   margin-top: 15px;
@@ -216,7 +224,7 @@ nav a:focus {
 }
 
 .cl-effect-4 a::after {
-  background: #f2b632;
+  background: #507084;
   content: '';
   height: 1px;
   left: 0;
@@ -253,12 +261,12 @@ nav a:focus {
 }
 
 .social-icons a {
-  color: #252839;
+  color: #507084;
   margin: 0 20px 0 20px;
 }
 
 .fa:hover {
-  color: #f2b632;
+  color: #fff;
   transition: all 0.3s ease-out;
   -webkit-transition: all 0.3s ease-out;
   -o-transition: all 0.3s ease-out;
@@ -271,12 +279,15 @@ nav a:focus {
 }
 
 .bonus h3 {
-  color: #677077;
-  font-family: 'Ubuntu', sans-serif;
-  font-size: 2em;
+  color: #507084;
+  font-size: 2rem;
   font-weight: 400;
   line-height: 1.25;
   margin: 0 0 24px;
   text-align: center;
   text-transform: uppercase;
+}
+
+#cd-timeline::before {
+  background-color: #fff !important;
 }

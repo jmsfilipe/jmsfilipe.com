@@ -1,11 +1,11 @@
 // typewritter animation
 $(function() {
-  $("#typed").typed({
+  $('#typed').typed({
     strings: [
-      "an AngularJS developer.",
-      "a SASS lover.",
-      "a web developer.",
-      "Jorge."
+      'an Angular developer.',
+      'a hybrid apps lover.',
+      'a front-end engineer.',
+      'Jorge.'
     ],
     typeSpeed: 30,
     showCursor: false,
@@ -15,7 +15,7 @@ $(function() {
   });
 
   function lift() {
-    $(".head-text").addClass("lift-text");
-    $(".badge-container").addClass("lift-text");
+    $('.head-text').addClass('lift-text');
+    $('.badge-container').addClass('lift-text');
   }
 });

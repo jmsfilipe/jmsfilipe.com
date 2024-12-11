@@ -1,0 +1,1 @@
+Over the years, I’ve had the opportunity to work with some fantastic teams, tackling a variety of projects in front-end development and beyond. My focus has always been on creating clean, efficient, and user-friendly solutions while contributing to collaborative and productive environments. Below are some highlights from my professional journey:
